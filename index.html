@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RESQLINK Monitor</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">RESQ<span>LINK</span></div>
+        </div>
+        <div class="sidebar-menu">
+            <div class="menu-heading">Navigation</div>
+            <a href="#dashboard-section" class="menu-item active" data-section="dashboard-section">
+                <span class="menu-icon"><i class="fas fa-tachometer-alt"></i></span>
+                Dashboard
+            </a>
+            <a href="#map-section" class="menu-item" data-section="map-section">
+                <span class="menu-icon"><i class="fas fa-map-marked-alt"></i></span>
+                Location Map
+            </a>
+            <a href="#history-section" class="menu-item" data-section="history-section">
+                <span class="menu-icon"><i class="fas fa-history"></i></span>
+                Location History
+            </a>
+            <a href="#message-section" class="menu-item" data-section="message-section">
+                <span class="menu-icon"><i class="fas fa-comment-dots"></i></span>
+                Message Log
+            </a>
+            <a href="#analytics-section" class="menu-item" data-section="analytics-section">
+                <span class="menu-icon"><i class="fas fa-chart-line"></i></span>
+                Analytics
+            </a>
+            <a href="#settings-section" class="menu-item" data-section="settings-section">
+                <span class="menu-icon"><i class="fas fa-cog"></i></span>
+                Settings
+            </a>
+        </div>
+        <div class="sidebar-footer">
+            <div class="user-info">
+                <div class="user-avatar">KS</div>
+                <div>
+                    <div class="user-name">karthi281104</div>
+                    <div class="user-role">Administrator</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div class="header">
+            <button class="toggle-sidebar" id="toggleSidebar">
+                <i class="fas fa-bars"></i>
+            </button>
+            <div class="header-center">
+                <div class="status-indicator online">
+                    <i class="fas fa-circle"></i> System Online
+                </div>
+            </div>
+            <div class="header-right">
+                <div class="time-display" id="currentTime"></div>
+                <div class="notifications">
+                    <i class="fas fa-bell"></i>
+                    <span class="notification-badge">3</span>
+                </div>
+                <div class="user-profile dropdown">
+                    <img src="https://ui-avatars.com/api/?name=K+S&background=006064&color=fff" alt="Profile" class="avatar">
+                    <div class="dropdown-content">
+                        <a href="#"><i class="fas fa-user"></i> Profile</a>
+                        <a href="#"><i class="fas fa-cog"></i> Settings</a>
+                        <a href="#"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dashboard Section -->
+        <div id="dashboard-section" class="content-section active">
+            <div class="dashboard-header">
+                <h1>RESQLINK Monitoring Dashboard</h1>
+                <p>Real-time location and sensor data monitoring</p>
+                <div class="action-buttons">
+                    <button class="btn btn-primary" id="refreshData">
+                        <i class="fas fa-sync-alt"></i> Refresh Data
+                    </button>
+                    <button class="btn btn-secondary" id="exportData">
+                        <i class="fas fa-download"></i> Export
+                    </button>
+                </div>
+            </div>
+
+            <div class="alert-banner" id="alertBanner">
+                <i class="fas fa-exclamation-triangle"></i>
+                <span id="alertMessage">No active alerts</span>
+                <button class="close-alert" id="closeAlert"><i class="fas fa-times"></i></button>
+            </div>
+
+            <div class="data-cards">
+                <div class="card status-card">
+                    <div class="card-icon"><i class="fas fa-signal"></i></div>
+                    <div class="card-content">
+                        <h3>Device Status</h3>
+                        <div id="deviceStatus">Online</div>
+                        <div class="status-indicator-small online">Active</div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-icon"><i class="fas fa-map-marker-alt"></i></div>
+                    <div class="card-content">
+                        <h3>Latest Location</h3>
+                        <div id="coordinates">Loading...</div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-icon"><i class="fas fa-comment"></i></div>
+                    <div class="card-content">
+                        <h3>Last Message</h3>
+                        <div id="lastMessage">Loading...</div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-icon"><i class="fas fa-clock"></i></div>
+                    <div class="card-content">
+                        <h3>Last Update</h3>
+                        <div id="lastUpdate">Loading...</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="main-grid">
+                <div class="map-section">
+                    <div class="map-header">
+                        <h2>Current Location</h2>
+                        <div class="map-controls">
+                            <button class="btn btn-small" id="zoomIn"><i class="fas fa-search-plus"></i></button>
+                            <button class="btn btn-small" id="zoomOut"><i class="fas fa-search-minus"></i></button>
+                            <button class="btn btn-small" id="recenterMap"><i class="fas fa-crosshairs"></i></button>
+                        </div>
+                    </div>
+                    <div class="map-container">
+                        <div id="map"></div>
+                    </div>
+                </div>
+
+                <div class="message-log">
+                    <div class="log-header">
+                        <h2>Recent Messages</h2>
+                        <button class="btn btn-small" id="clearMessages"><i class="fas fa-trash"></i></button>
+                    </div>
+                    <div class="log-content" id="messageLog"></div>
+                    <div class="log-footer">
+                        <button class="btn btn-full" id="viewAllMessages">View All Messages</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Map Section -->
+        <div id="map-section" class="content-section">
+            <div class="section-header">
+                <h1>Location Tracking</h1>
+                <p>Real-time device location with detailed controls</p>
+            </div>
+            
+            <div class="fullscreen-map-container">
+                <div class="map-sidebar">
+                    <div class="map-filters">
+                        <h3>Map Controls</h3>
+                        <div class="filter-group">
+                            <label>Map Type</label>
+                            <select id="mapType" class="select-input">
+                                <option value="roadmap">Road Map</option>
+                                <option value="satellite">Satellite</option>
+                                <option value="hybrid">Hybrid</option>
+                                <option value="terrain">Terrain</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label>Show Path</label>
+                            <label class="switch">
+                                <input type="checkbox" id="showPath" checked>
+                                <span class="slider round"></span>
+                            </label>
+                        </div>
+                        <div class="filter-group">
+                            <label>Location Markers</label>
+                            <label class="switch">
+                                <input type="checkbox" id="showMarkers" checked>
+                                <span class="slider round"></span>
+                            </label>
+                        </div>
+                        <div class="filter-group">
+                            <label>Auto Center</label>
+                            <label class="switch">
+                                <input type="checkbox" id="autoCenter" checked>
+                                <span class="slider round"></span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="location-details">
+                        <h3>Current Location</h3>
+                        <div class="detail-item">
+                            <span class="detail-label">Latitude:</span>
+                            <span class="detail-value" id="currentLat">--</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Longitude:</span>
+                            <span class="detail-value" id="currentLon">--</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Altitude:</span>
+                            <span class="detail-value" id="currentAlt">--</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Speed:</span>
+                            <span class="detail-value" id="currentSpeed">--</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Last Update:</span>
+                            <span class="detail-value" id="locationTimestamp">--</span>
+                        </div>
+                    </div>
+                    
+                    <div class="nearby-addresses">
+                        <h3>Nearby Address</h3>
+                        <div id="addressInfo">Retrieving address...</div>
+                    </div>
+                </div>
+                <div id="fullscreenMap"></div>
+            </div>
+        </div>
+
+        <!-- History Section -->
+        <div id="history-section" class="content-section">
+            <div class="section-header">
+                <h1>Location History</h1>
+                <p>Track movement patterns and history</p>
+                <div class="history-controls">
+                    <div class="date-picker">
+                        <label for="startDate">Start Date</label>
+                        <input type="date" id="startDate" class="date-input">
+                    </div>
+                    <div class="date-picker">
+                        <label for="endDate">End Date</label>
+                        <input type="date" id="endDate" class="date-input">
+                    </div>
+                    <button class="btn btn-primary" id="filterHistory"><i class="fas fa-filter"></i> Filter</button>
+                </div>
+            </div>
+            
+            <div class="history-container">
+                <div class="history-map-container">
+                    <div id="historyMap"></div>
+                </div>
+                <div class="history-timeline">
+                    <h3>Timeline</h3>
+                    <div class="timeline-container" id="locationTimeline"></div>
+                </div>
+            </div>
+            
+            <div class="history-data">
+                <h3>Location Records</h3>
+                <div class="table-container">
+                    <table class="data-table" id="historyTable">
+                        <thead>
+                            <tr>
+                                <th>Date & Time</th>
+                                <th>Latitude</th>
+                                <th>Longitude</th>
+                                <th>Message</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="historyTableBody">
+                            <!-- History data rows will be populated here -->
+                        </tbody>
+                    </table>
+                </div>
+                <div class="pagination">
+                    <button id="prevPage" class="btn btn-small"><i class="fas fa-chevron-left"></i></button>
+                    <span id="pageIndicator">Page 1 of 1</span>
+                    <button id="nextPage" class="btn btn-small"><i class="fas fa-chevron-right"></i></button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Message Section -->
+        <div id="message-section" class="content-section">
+            <div class="section-header">
+                <h1>Message Log</h1>
+                <p>Complete communication history</p>
+                <div class="message-controls">
+                    <div class="message-search">
+                        <input type="text" placeholder="Search messages..." id="messageSearch" class="search-input">
+                        <button class="btn btn-primary" id="searchMessages"><i class="fas fa-search"></i></button>
+                    </div>
+                    <div class="message-filter">
+                        <select id="messageFilter" class="select-input">
+                            <option value="all">All Messages</option>
+                            <option value="alert">Alerts</option>
+                            <option value="status">Status Updates</option>
+                            <option value="location">Location Updates</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="message-container">
+                <div class="full-message-log" id="fullMessageLog">
+                    <!-- Messages will be populated here -->
+                </div>
+            </div>
+            
+            <div class="message-composer">
+                <h3>Send Message</h3>
+                <div class="composer-form">
+                    <select id="messageType" class="select-input">
+                        <option value="command">Command</option>
+                        <option value="query">Query</option>
+                        <option value="alert">Alert</option>
+                    </select>
+                    <input type="text" id="messageContent" placeholder="Type message..." class="text-input">
+                    <button class="btn btn-primary" id="sendMessage"><i class="fas fa-paper-plane"></i> Send</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Analytics Section -->
+        <div id="analytics-section" class="content-section">
+            <div class="section-header">
+                <h1>Analytics Dashboard</h1>
+                <p>Data insights and statistics</p>
+                <div class="analytics-controls">
+                    <select id="timeRange" class="select-input">
+                        <option value="day">Last 24 Hours</option>
+                        <option value="week">Last 7 Days</option>
+                        <option value="month">Last 30 Days</option>
+                        <option value="year">Last Year</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="analytics-grid">
+                <div class="analytics-card">
+                    <h3>Distance Traveled</h3>
+                    <div class="analytics-value" id="distanceTraveled">0 km</div>
+                    <canvas id="distanceChart"></canvas>
+                </div>
+                <div class="analytics-card">
+                    <h3>Messages Sent/Received</h3>
+                    <div class="analytics-value" id="messageCount">0</div>
+                    <canvas id="messageChart"></canvas>
+                </div>
+                <div class="analytics-card">
+                    <h3>Battery Status</h3>
+                    <div class="analytics-value" id="batteryStatus">80%</div>
+                    <canvas id="batteryChart"></canvas>
+                </div>
+                <div class="analytics-card">
+                    <h3>System Uptime</h3>
+                    <div class="analytics-value" id="systemUptime">0 days</div>
+                    <canvas id="uptimeChart"></canvas>
+                </div>
+            </div>
+            
+            <div class="heatmap-container">
+                <h3>Location Heatmap</h3>
+                <div id="heatmap"></div>
+            </div>
+        </div>
+
+        <!-- Settings Section -->
+        <div id="settings-section" class="content-section">
+            <div class="section-header">
+                <h1>System Settings</h1>
+                <p>Configure system parameters and preferences</p>
+            </div>
+            
+            <div class="settings-container">
+                <div class="settings-sidebar">
+                    <div class="settings-nav">
+                        <a href="#general-settings" class="settings-nav-item active">General</a>
+                        <a href="#notification-settings" class="settings-nav-item">Notifications</a>
+                        <a href="#map-settings" class="settings-nav-item">Map Display</a>
+                        <a href="#device-settings" class="settings-nav-item">Device Config</a>
+                        <a href="#account-settings" class="settings-nav-item">Account</a>
+                    </div>
+                </div>
+                
+                <div class="settings-content">
+                    <div id="general-settings" class="settings-panel active">
+                        <h2>General Settings</h2>
+                        
+                        <div class="settings-group">
+                            <h3>System Preferences</h3>
+                            <div class="setting-item">
+                                <div class="setting-label">
+                                    <label>Dark Mode</label>
+                                    <span class="setting-description">Enable dark theme for the interface</span>
+                                </div>
+                                <div class="setting-control">
+                                    <label class="switch">
+                                        <input type="checkbox" id="darkModeToggle">
+                                        <span class="slider round"></span>
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <div class="setting-item">
+                                <div class="setting-label">
+                                    <label>Auto Refresh</label>
+                                    <span class="setting-description">Automatically refresh data</span>
+                                </div>
+                                <div class="setting-control">
+                                    <select id="refreshInterval" class="select-input">
+                                        <option value="0">Off</option>
+                                        <option value="30" selected>30 seconds</option>
+                                        <option value="60">1 minute</option>
+                                        <option value="300">5 minutes</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="setting-item">
+                                <div class="setting-label">
+                                    <label>Data Storage Duration</label>
+                                    <span class="setting-description">How long to keep historical data</span>
+                                </div>
+                                <div class="setting-control">
+                                    <select id="dataRetention" class="select-input">
+                                        <option value="7">7 days</option>
+                                        <option value="30" selected>30 days</option>
+                                        <option value="90">90 days</option>
+                                        <option value="365">1 year</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="settings-group">
+                            <h3>Time & Date</h3>
+                            <div class="setting-item">
+                                <div class="setting-label">
+                                    <label>Time Format</label>
+                                    <span class="setting-description">Choose 12 or 24-hour format</span>
+                                </div>
+                                <div class="setting-control">
+                                    <select id="timeFormat" class="select-input">
+                                        <option value="12">12-hour</option>
+                                        <option value="24">24-hour</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="setting-item">
+                                <div class="setting-label">
+                                    <label>Timezone</label>
+                                    <span class="setting-description">Set your preferred timezone</span>
+                                </div>
+                                <div class="setting-control">
+                                    <select id="timezone" class="select-input">
+                                        <option value="UTC">UTC</option>
+                                        <option value="local" selected>Local Browser Time</option>
+                                        <!-- More options can be added -->
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <button class="btn btn-primary" id="saveGeneralSettings">Save Settings</button>
+                    </div>
+                    
+                    <!-- Other settings panels would go here -->
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <div>RESQLINK Dashboard v1.5</div>
+            <div>&copy; 2025 RESQLINK Systems</div>
+        </div>
+    </div>
+
+    <!-- Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+    
+    <!-- Chart.js for analytics -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Google Maps -->
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD85ArGGCGHtPZH7BW8uh0smpCe4U-u_gE&libraries=visualization&callback=initializeAllMaps" async defer></script>
+    
+    <script src="script.js"></script>
+</body>
+</html>

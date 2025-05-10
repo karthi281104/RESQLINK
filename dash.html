@@ -1,0 +1,1454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ResQLink - Rescue Dashboard</title>
+    <style>
+        :root {
+            --primary: #e63946;
+            --secondary: #457b9d;
+            --light: #f1faee;
+            --dark: #1d3557;
+            --white: #ffffff;
+            --success: #2ecc71;
+            --warning: #f39c12;
+            --danger: #e74c3c;
+            --info: #3498db;
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        body {
+            background-color: #f5f7fa;
+            color: var(--dark);
+            min-height: 100vh;
+            display: flex;
+        }
+        
+        /* Sidebar */
+        .sidebar {
+            width: 250px;
+            background-color: var(--dark);
+            color: var(--white);
+            height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            overflow-y: auto;
+            transition: all 0.3s;
+            z-index: 1000;
+        }
+        .sidebar-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+        }
+        .logo span {
+            color: var(--primary);
+        }
+        .sidebar-menu {
+            padding: 1rem 0;
+        }
+        .menu-heading {
+            padding: 0.75rem 1.5rem;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.6);
+            font-weight: 600;
+        }
+        .menu-item {
+            padding: 0.75rem 1.5rem;
+            display: flex;
+            align-items: center;
+            color: rgba(255,255,255,0.8);
+            text-decoration: none;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        .menu-item:hover, .menu-item.active {
+            background-color: rgba(255,255,255,0.1);
+            color: var(--white);
+        }
+        .menu-icon {
+            margin-right: 0.75rem;
+            font-size: 1.2rem;
+        }
+        .sidebar-footer {
+            padding: 1rem 1.5rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+        }
+        .user-info {
+            display: flex;
+            align-items: center;
+        }
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 0.75rem;
+        }
+        .user-name {
+            font-weight: 500;
+        }
+        .user-role {
+            font-size: 0.8rem;
+            color: rgba(255,255,255,0.6);
+        }
+        
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            margin-left: 250px;
+            transition: all 0.3s;
+        }
+        
+        /* Header */
+        .header {
+            background-color: var(--white);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        .toggle-sidebar {
+            background: none;
+            border: none;
+            color: var(--dark);
+            font-size: 1.2rem;
+            cursor: pointer;
+        }
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+        .notification-icon {
+            position: relative;
+            cursor: pointer;
+        }
+        .notification-badge {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background-color: var(--primary);
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            font-size: 0.7rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        /* Dashboard Content */
+        .dashboard {
+            padding: 2rem;
+        }
+        .dashboard-header {
+            margin-bottom: 2rem;
+        }
+        .dashboard-header h1 {
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+        }
+        .dashboard-header p {
+            color: #777;
+        }
+        
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        .stat-card {
+            background-color: var(--white);
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            display: flex;
+            align-items: center;
+        }
+        .stat-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-right: 1rem;
+            color: white;
+        }
+        .stat-icon.active {
+            background-color: var(--success);
+        }
+        .stat-icon.pending {
+            background-color: var(--warning);
+        }
+        .stat-icon.alert {
+            background-color: var(--danger);
+        }
+        .stat-icon.team {
+            background-color: var(--info);
+        }
+        .stat-info h3 {
+            font-size: 1.5rem;
+            margin-bottom: 0.25rem;
+        }
+        .stat-info p {
+            color: #777;
+            font-size: 0.9rem;
+        }
+        
+        /* Map and Activity Section */
+        .main-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        .map-section {
+            background-color: var(--white);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        .map-header {
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .map-header h2 {
+            font-size: 1.2rem;
+        }
+        .map-controls {
+            display: flex;
+            gap: 0.5rem;
+        }
+        .map-btn {
+            background-color: var(--light);
+            border: none;
+            border-radius: 4px;
+            padding: 0.4rem 0.75rem;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .map-btn:hover {
+            background-color: #e1e8ed;
+        }
+        .map-btn.active {
+            background-color: var(--secondary);
+            color: white;
+        }
+        .map-container {
+            height: 500px;
+            position: relative;
+        }
+        #map {
+            height: 100%;
+            width: 100%;
+        }
+        
+        /* Activity Section */
+        .activity-section {
+            background-color: var(--white);
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+        }
+        .activity-header {
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid #eee;
+        }
+        .activity-header h2 {
+            font-size: 1.2rem;
+        }
+        .activity-feed {
+            padding: 1rem 0;
+            overflow-y: auto;
+            flex: 1;
+            max-height: 500px;
+        }
+        .activity-item {
+            padding: 0.75rem 1.5rem;
+            border-left: 3px solid transparent;
+            margin-bottom: 0.5rem;
+            transition: all 0.3s;
+        }
+        .activity-item:hover {
+            background-color: #f9f9f9;
+        }
+        .activity-item.critical {
+            border-left-color: var(--danger);
+        }
+        .activity-item.warning {
+            border-left-color: var(--warning);
+        }
+        .activity-item.info {
+            border-left-color: var(--info);
+        }
+        .activity-item.success {
+            border-left-color: var(--success);
+        }
+        .activity-meta {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+        }
+        .activity-title {
+            font-weight: 500;
+        }
+        .activity-time {
+            font-size: 0.8rem;
+            color: #777;
+        }
+        .activity-desc {
+            font-size: 0.9rem;
+            color: #555;
+        }
+        
+        /* Device Data Section */
+        .device-data-section {
+            background-color: var(--white);
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            overflow: hidden;
+        }
+        .device-header {
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .device-header h2 {
+            font-size: 1.2rem;
+        }
+        .refresh-btn {
+            background-color: var(--light);
+            border: none;
+            border-radius: 4px;
+            padding: 0.4rem 0.75rem;
+            font-size: 0.9rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            transition: all 0.3s;
+        }
+        .refresh-btn:hover {
+            background-color: #e1e8ed;
+        }
+        .device-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .device-table th {
+            padding: 1rem 1.5rem;
+            text-align: left;
+            background-color: #f9f9f9;
+            font-weight: 600;
+            color: #555;
+        }
+        .device-table td {
+            padding: 1rem 1.5rem;
+            border-top: 1px solid #eee;
+        }
+        .device-table tr:hover {
+            background-color: #f9f9f9;
+        }
+        .status-badge {
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+        .status-active {
+            background-color: rgba(46, 204, 113, 0.15);
+            color: var(--success);
+        }
+        .status-offline {
+            background-color: rgba(231, 76, 60, 0.15);
+            color: var(--danger);
+        }
+        .status-low-battery {
+            background-color: rgba(243, 156, 18, 0.15);
+            color: var(--warning);
+        }
+        .action-btn {
+            background: none;
+            border: none;
+            color: var(--secondary);
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+        .action-btn:hover {
+            color: var(--primary);
+        }
+        
+        /* Responsive */
+        @media (max-width: 992px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+            .sidebar {
+                left: -250px;
+            }
+            .sidebar.active {
+                left: 0;
+            }
+            .main-content {
+                margin-left: 0;
+            }
+        }
+        
+        /* Overlay for sidebar on mobile */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 999;
+            display: none;
+        }
+        .overlay.active {
+            display: block;
+        }
+
+        /* Notification Panel */
+        .notification-panel {
+            position: absolute;
+            top: 60px;
+            right: 20px;
+            background-color: var(--white);
+            border-radius: 8px;
+            box-shadow: 0 3px 15px rgba(0,0,0,0.2);
+            width: 320px;
+            z-index: 1001;
+            display: none;
+        }
+        .notification-panel.active {
+            display: block;
+        }
+        .notification-header {
+            padding: 1rem;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .notification-list {
+            max-height: 350px;
+            overflow-y: auto;
+        }
+        .notification-item {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid #f5f5f5;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .notification-item:hover {
+            background-color: #f9f9f9;
+        }
+        .notification-item.unread {
+            border-left: 3px solid var(--primary);
+        }
+        .notification-time {
+            font-size: 0.7rem;
+            color: #999;
+            margin-top: 0.25rem;
+        }
+        .notification-footer {
+            padding: 0.75rem 1rem;
+            text-align: center;
+            border-top: 1px solid #eee;
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">ResQ<span>Link</span></div>
+        </div>
+        <div class="sidebar-menu">
+            <div class="menu-heading">Main</div>
+            <a href="#" class="menu-item active">
+                <span class="menu-icon">📊</span>
+                Dashboard
+            </a>
+            <a href="#" class="menu-item">
+                <span class="menu-icon">🗺️</span>
+                Live Tracking
+            </a>
+            <a href="#" class="menu-item">
+                <span class="menu-icon">📱</span>
+                Devices
+            </a>
+            <a href="#" class="menu-item">
+                <span class="menu-icon">🚨</span>
+                Alerts
+            </a>
+            
+            <div class="menu-heading">Management</div>
+            <a href="#" class="menu-item">
+                <span class="menu-icon">👥</span>
+                Teams
+            </a>
+            <a href="#" class="menu-item">
+                <span class="menu-icon">📝</span>
+                Reports
+            </a>
+            <a href="#" class="menu-item">
+                <span class="menu-icon">⚙️</span>
+                Settings
+            </a>
+        </div>
+        <div class="sidebar-footer">
+            <div class="user-info">
+                <div class="user-avatar">RT</div>
+                <div>
+                    <div class="user-name">Rescue Team</div>
+                    <div class="user-role">Team Leader</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Overlay for sidebar on mobile -->
+    <div class="overlay"></div>
+    
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Header -->
+        <div class="header">
+            <button class="toggle-sidebar">☰</button>
+            <div class="header-right">
+                <div class="notification-icon" id="notifBtn">
+                    🔔
+                    <span class="notification-badge" id="notifBadge">0</span>
+                </div>
+                <div>👤</div>
+            </div>
+        </div>
+        
+        <!-- Notification Panel -->
+        <div class="notification-panel" id="notifPanel">
+            <div class="notification-header">
+                <h3>Notifications</h3>
+                <span id="markAllRead" style="cursor:pointer;color:var(--secondary);font-size:0.8rem;">Mark all as read</span>
+            </div>
+            <div class="notification-list" id="notificationList">
+                <!-- Notification items will be added dynamically -->
+            </div>
+            <div class="notification-footer">
+                <a href="#" style="color:var(--secondary);text-decoration:none;font-size:0.9rem;">View all notifications</a>
+            </div>
+        </div>
+        
+        <!-- Dashboard Content -->
+        <div class="dashboard">
+            <div class="dashboard-header">
+                <h1>Rescue Operations Dashboard</h1>
+                <p>Monitor real-time data from ResQLink devices in the field</p>
+            </div>
+            
+            <!-- Stats Section -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon active">📡</div>
+                    <div class="stat-info">
+                        <h3 id="activeDevicesCount">0</h3>
+                        <p>Active Devices</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon pending">⏱️</div>
+                    <div class="stat-info">
+                        <h3 id="pendingAssistanceCount">0</h3>
+                        <p>Pending Assistance</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon alert">🚨</div>
+                    <div class="stat-info">
+                        <h3 id="criticalAlertsCount">0</h3>
+                        <p>Critical Alerts</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon team">👥</div>
+                    <div class="stat-info">
+                        <h3 id="teamsDeployedCount">0</h3>
+                        <p>Teams Deployed</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Map and Activity Section -->
+            <div class="main-grid">
+                <!-- Map Section -->
+                <div class="map-section">
+                    <div class="map-header">
+                        <h2>Live Location Tracking</h2>
+                        <div class="map-controls">
+                            <button class="map-btn active" data-filter="all">All Devices</button>
+                            <button class="map-btn" data-filter="critical">Critical Only</button>
+                            <button class="map-btn" data-filter="teams">Teams</button>
+                        </div>
+                    </div>
+                    <div class="map-container">
+                        <div id="map"></div>
+                    </div>
+                </div>
+                
+                <!-- Activity Section -->
+                <div class="activity-section">
+                    <div class="activity-header">
+                        <h2>Recent Activity</h2>
+                    </div>
+                    <div class="activity-feed" id="activityFeed">
+                        <!-- Activity items will be populated dynamically -->
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Device Data Section -->
+            <div class="device-data-section">
+                <div class="device-header">
+                    <h2>Active Device Data</h2>
+                    <button class="refresh-btn" id="refreshData">
+                        <span>🔄</span> Refresh
+                    </button>
+                </div>
+                <div style="overflow-x: auto;">
+                    <table class="device-table">
+                        <thead>
+                            <tr>
+                                <th>Device ID</th>
+                                <th>Last Update</th>
+                                <th>Coordinates</th>
+                                <th>Battery</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="deviceTableBody">
+                            <!-- Device data will be populated dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Load Firebase -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.22.1/firebase-database-compat.js"></script>
+    
+    <!-- Load Google Maps API -->
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD85ArGGCGHtPZH7BW8uh0smpCe4U-u_gE&callback=initMap"></script>
+    
+    <script>
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyD3t1XScGrfq7zZJm2j3mqTe9tsPIrPEPw",
+            authDomain: "hydrsense.firebaseapp.com",
+            databaseURL: "https://hydrsense-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "hydrsense",
+            storageBucket: "hydrsense.appspot.com",
+            messagingSenderId: "123456789012",
+            appId: "1:123456789012:web:abcdef1234567890"
+        };
+        
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+        
+        // Global variables
+        let map;
+        let markers = {};
+        let devices = {};
+        let activities = [];
+        let notifications = [];
+        let notificationCount = 0;
+        
+        // Sample coordinates for Nepal (where your coordinates are located)
+        const defaultCenter = { lat: 27.7172, lng: 85.324 };
+        
+        // Mock device data - will be replaced with Firebase data
+        const mockDevices = {
+            "RQ-0023": {
+                id: "RQ-0023",
+                lastUpdate: new Date(),
+                coordinates: { lat: 27.7172, lng: 85.3240 },
+                battery: 42,
+                status: "SOS",
+                type: "device"
+            },
+            "RQ-0017": {
+                id: "RQ-0017",
+                lastUpdate: new Date(Date.now() - 5 * 60000),
+                coordinates: { lat: 27.6980, lng: 85.3592 },
+                battery: 15,
+                status: "LOW_BATTERY",
+                type: "device"
+            },
+            "RQ-0019": {
+                id: "RQ-0019",
+                lastUpdate: new Date(Date.now() - 12 * 60000),
+                coordinates: { lat: 27.7041, lng: 85.3304 },
+                battery: 78,
+                status: "ACTIVE",
+                type: "device"
+            },
+            "RQ-0021": {
+                id: "RQ-0021",
+                lastUpdate: new Date(Date.now() - 32 * 60000),
+                coordinates: { lat: 27.7154, lng: 85.3123 },
+                battery: 56,
+                status: "ACTIVE",
+                type: "device"
+            },
+            "RQ-0015": {
+                id: "RQ-0015",
+                lastUpdate: new Date(Date.now() - 3 * 60 * 60000),
+                coordinates: { lat: 27.7302, lng: 85.3395 },
+                battery: 0,
+                status: "OFFLINE",
+                type: "device"
+            },
+            "TEAM-A": {
+                id: "TEAM-A",
+                lastUpdate: new Date(Date.now() - 25 * 60000),
+                coordinates: { lat: 27.7195, lng: 85.3270 },
+                status: "ACTIVE",
+                type: "team",
+                members: 4
+            },
+            "TEAM-B": {
+                id: "TEAM-B",
+                lastUpdate: new Date(Date.now() - 45 * 60000),
+                coordinates: { lat: 27.7090, lng: 85.3350 },
+                status: "ACTIVE",
+                type: "team",
+                members: 3
+            }
+        };
+        
+        // Initialize Google Maps
+        function initMap() {
+            map = new google.maps.Map(document.getElementById("map"), {
+                center: defaultCenter,
+                zoom: 13,
+                styles: [
+                    { featureType: "poi", stylers: [{ visibility: "off" }] },
+                    { featureType: "transit", stylers: [{ visibility: "off" }] }
+                ]
+            });
+            
+            // Load initial data
+            loadInitialData();
+            
+            // Set up Firebase listeners
+            setupFirebaseListeners();
+        }
+        
+        // Load initial mock data
+        function loadInitialData() {
+            devices = mockDevices;
+            updateDeviceTable();
+            updateMapMarkers();
+            updateStats();
+            populateActivityFeed();
+        }
+        
+        // Set up Firebase real-time listeners
+        function setupFirebaseListeners() {
+            const loraDataRef = database.ref('loraData');
+            
+            loraDataRef.on('value', (snapshot) => {
+                const data = snapshot.val();
+                if (data && data.message) {
+                    processLoRaMessage(data.message);
+                }
+            });
+        }
+        
+        // Process incoming LoRa messages
+        function processLoRaMessage(message) {
+            console.log("Processing LoRa message:", message);
+            
+            try {
+                // Parse the message - assume it's in format "DEVICEID:LAT,LNG:BATTERY:STATUS"
+                // Example: "RQ-0023:27.7172,85.3240:42:SOS"
+                const parts = message.split(':');
+                
+                if (parts.length >= 3) {
+                    const deviceId = parts[0];
+                    const coords = parts[1].split(',');
+                    const battery = parseInt(parts[2]);
+                    const status = parts.length > 3 ? parts[3] : "ACTIVE";
+                    
+                    // Update device data
+                    updateDeviceData(deviceId, {
+                        id: deviceId,
+                        lastUpdate: new Date(),
+                        coordinates: { 
+                            lat: parseFloat(coords[0]), 
+                            lng: parseFloat(coords[1]) 
+                        },
+                        battery: battery,
+                        status: status,
+                        type: "device"
+                    });
+                    
+                    // Add activity
+                    addActivity({
+                        title: status === "SOS" ? "SOS Signal Received" : 
+                               status === "LOW_BATTERY" ? "Low Battery Alert" : 
+                               "Location Update",
+                        time: new Date(),
+                        description: `Device ${deviceId} ${status === "SOS" ? "triggered an emergency SOS" : 
+                                       status === "LOW_BATTERY" ? `battery level at ${battery}%` : 
+                                       "sent location update"}. Location: ${coords[0]}° N, ${coords[1]}° E`,
+                        type: status === "SOS" ? "critical" : 
+                              status === "LOW_BATTERY" ? "warning" : "info"
+                    });
+                    
+                    // Add notification if critical or warning
+                    if (status === "SOS" || status === "LOW_BATTERY") {
+                        addNotification({
+                            title: status === "SOS" ? "Emergency SOS" : "Low Battery Warning",
+                            message: status === "SOS" ? 
+                                    `Device ${deviceId} has triggered an emergency SOS signal!` : 
+                                    `Device ${deviceId} battery level is low (${battery}%)`,
+                            time: new Date(),
+                            type: status === "SOS" ? "critical" : "warning"
+                        });
+                    }
+                }
+            } catch (error) {
+                console.error("Error processing LoRa message:", error);
+            }
+        }
+        
+        // Update device data
+        function updateDeviceData(deviceId, data) {
+            devices[deviceId] = data;
+            updateDeviceTable();
+            updateMapMarkers();
+            updateStats();
+        }
+        
+        // Update device table
+// Update device table
+function updateDeviceTable() {
+    const tableBody = document.getElementById('deviceTableBody');
+    tableBody.innerHTML = '';
+    
+    Object.values(devices)
+        .filter(device => device.type === "device")
+        .sort((a, b) => {
+            // Sort by status priority (SOS first, then LOW_BATTERY, then ACTIVE, then OFFLINE)
+            const statusPriority = { "SOS": 0, "LOW_BATTERY": 1, "ACTIVE": 2, "OFFLINE": 3 };
+            return statusPriority[a.status] - statusPriority[b.status];
+        })
+        .forEach(device => {
+            const row = document.createElement('tr');
+            
+            // Format the coordinates to 4 decimal places
+            const lat = device.coordinates.lat.toFixed(4);
+            const lng = device.coordinates.lng.toFixed(4);
+            
+            // Format the time
+            const timeStr = formatTimeAgo(device.lastUpdate);
+            
+            // Determine status class
+            const statusClass = device.status === "SOS" ? "status-offline" :
+                               device.status === "LOW_BATTERY" ? "status-low-battery" :
+                               device.status === "ACTIVE" ? "status-active" :
+                               "status-offline";
+            
+            // Determine status display text
+            const statusText = device.status === "SOS" ? "SOS Emergency" :
+                              device.status === "LOW_BATTERY" ? "Low Battery" :
+                              device.status === "ACTIVE" ? "Active" :
+                              "Offline";
+            
+            row.innerHTML = `
+                <td><strong>${device.id}</strong></td>
+                <td>${timeStr}</td>
+                <td>${lat}° N, ${lng}° E</td>
+                <td>${device.battery}%</td>
+                <td><span class="status-badge ${statusClass}">${statusText}</span></td>
+                <td>
+                    <button class="action-btn" data-device="${device.id}" data-action="view">👁️</button>
+                    <button class="action-btn" data-device="${device.id}" data-action="track">📍</button>
+                    <button class="action-btn" data-device="${device.id}" data-action="more">⋯</button>
+                </td>
+            `;
+            
+            tableBody.appendChild(row);
+        });
+    
+    // Add event listeners to action buttons
+    document.querySelectorAll('.action-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const deviceId = this.getAttribute('data-device');
+            const action = this.getAttribute('data-action');
+            handleDeviceAction(deviceId, action);
+        });
+    });
+}
+
+// Handle device actions
+function handleDeviceAction(deviceId, action) {
+    const device = devices[deviceId];
+    
+    switch (action) {
+        case 'view':
+            // View device details
+            alert(`Device Details - ${deviceId}\nStatus: ${device.status}\nBattery: ${device.battery}%\nLocation: ${device.coordinates.lat.toFixed(4)}° N, ${device.coordinates.lng.toFixed(4)}° E`);
+            break;
+        case 'track':
+            // Center map on device
+            map.setCenter(device.coordinates);
+            map.setZoom(16);
+            break;
+        case 'more':
+            // Additional actions menu
+            alert(`Additional actions for ${deviceId}\n- Send message\n- Request update\n- View history\n- Assign team`);
+            break;
+    }
+}
+
+// Update map markers
+function updateMapMarkers() {
+    // Remove existing markers
+    Object.values(markers).forEach(marker => marker.setMap(null));
+    markers = {};
+    
+    // Get current filter
+    const currentFilter = document.querySelector('.map-btn.active').getAttribute('data-filter');
+    
+    // Add new markers based on filter
+    Object.values(devices).forEach(device => {
+        // Apply filter
+        if (
+            (currentFilter === 'all') ||
+            (currentFilter === 'critical' && device.status === 'SOS') ||
+            (currentFilter === 'teams' && device.type === 'team')
+        ) {
+            // Determine icon based on device type and status
+            let icon = {
+                path: google.maps.SymbolPath.CIRCLE,
+                scale: 10,
+                fillColor: getMarkerColor(device),
+                fillOpacity: 0.8,
+                strokeColor: '#ffffff',
+                strokeWeight: 2
+            };
+            
+            // For SOS, use a different animation
+            const animation = device.status === 'SOS' ? 
+                google.maps.Animation.BOUNCE : null;
+            
+            // Create marker
+            const marker = new google.maps.Marker({
+                position: device.coordinates,
+                map: map,
+                title: device.id,
+                icon: icon,
+                animation: animation
+            });
+            
+            // Add click listener
+            marker.addListener('click', () => {
+                showDeviceInfo(device);
+            });
+            
+            // Store marker
+            markers[device.id] = marker;
+        }
+    });
+}
+
+// Get marker color based on device type and status
+function getMarkerColor(device) {
+    if (device.type === 'team') return '#3498db';
+    
+    switch (device.status) {
+        case 'SOS': return '#e74c3c';
+        case 'LOW_BATTERY': return '#f39c12';
+        case 'ACTIVE': return '#2ecc71';
+        case 'OFFLINE': return '#95a5a6';
+        default: return '#95a5a6';
+    }
+}
+
+// Show device info popup
+function showDeviceInfo(device) {
+    const infoContent = `
+        <div style="padding: 10px; min-width: 200px;">
+            <h3 style="margin: 0 0 5px 0;">${device.id}</h3>
+            <p style="margin: 0 0 5px 0;">
+                <strong>Status:</strong> 
+                <span style="color: ${getMarkerColor(device)};">
+                    ${device.status === 'SOS' ? 'SOS Emergency' :
+                     device.status === 'LOW_BATTERY' ? 'Low Battery' :
+                     device.status === 'ACTIVE' ? 'Active' :
+                     'Offline'}
+                </span>
+            </p>
+            ${device.type === 'device' ? `<p style="margin: 0 0 5px 0;"><strong>Battery:</strong> ${device.battery}%</p>` : ''}
+            ${device.type === 'team' ? `<p style="margin: 0 0 5px 0;"><strong>Members:</strong> ${device.members}</p>` : ''}
+            <p style="margin: 0 0 5px 0;"><strong>Last Update:</strong> ${formatTimeAgo(device.lastUpdate)}</p>
+            <p style="margin: 0 0 5px 0;"><strong>Coordinates:</strong><br>
+               ${device.coordinates.lat.toFixed(6)}° N, ${device.coordinates.lng.toFixed(6)}° E</p>
+            ${device.status === 'SOS' ? 
+                `<button style="background-color: #e74c3c; color: white; border: none; padding: 5px 10px; border-radius: 3px; cursor: pointer; margin-top: 5px; width: 100%;">
+                    Dispatch Rescue Team
+                </button>` : ''}
+        </div>
+    `;
+    
+    // Create info window
+    const infoWindow = new google.maps.InfoWindow({
+        content: infoContent
+    });
+    
+    // Close any open info windows
+    Object.values(markers).forEach(marker => {
+        if (marker.infoWindow) {
+            marker.infoWindow.close();
+        }
+    });
+    
+    // Open new info window
+    infoWindow.open(map, markers[device.id]);
+    markers[device.id].infoWindow = infoWindow;
+}
+
+// Update stats
+function updateStats() {
+    const deviceValues = Object.values(devices);
+    
+    // Count active devices
+    const activeDevices = deviceValues.filter(d => 
+        d.type === 'device' && 
+        (d.status === 'ACTIVE' || d.status === 'SOS' || d.status === 'LOW_BATTERY')
+    ).length;
+    
+    // Count pending assistance (SOS)
+    const pendingAssistance = deviceValues.filter(d => 
+        d.status === 'SOS'
+    ).length;
+    
+    // Count critical alerts (SOS + LOW_BATTERY)
+    const criticalAlerts = deviceValues.filter(d => 
+        d.status === 'SOS' || d.status === 'LOW_BATTERY'
+    ).length;
+    
+    // Count teams deployed
+    const teamsDeployed = deviceValues.filter(d => 
+        d.type === 'team' && d.status === 'ACTIVE'
+    ).length;
+    
+    // Update UI
+    document.getElementById('activeDevicesCount').textContent = activeDevices;
+    document.getElementById('pendingAssistanceCount').textContent = pendingAssistance;
+    document.getElementById('criticalAlertsCount').textContent = criticalAlerts;
+    document.getElementById('teamsDeployedCount').textContent = teamsDeployed;
+}
+
+// Format time ago
+function formatTimeAgo(date) {
+    const now = new Date();
+    const diffMs = now - date;
+    const diffSec = Math.floor(diffMs / 1000);
+    const diffMin = Math.floor(diffSec / 60);
+    const diffHour = Math.floor(diffMin / 60);
+    
+    if (diffMin < 1) return 'Just now';
+    if (diffMin < 60) return `${diffMin} min ago`;
+    if (diffHour < 24) return `${diffHour} hour${diffHour === 1 ? '' : 's'} ago`;
+    
+    // For older dates, return the date
+    return date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+}
+
+// Add activity
+function addActivity(activity) {
+    // Prepend to activities array
+    activities.unshift(activity);
+    
+    // Trim to keep only the latest 50 activities
+    if (activities.length > 50) {
+        activities = activities.slice(0, 50);
+    }
+    
+    // Update activity feed
+    populateActivityFeed();
+}
+
+// Populate activity feed
+function populateActivityFeed() {
+    const feed = document.getElementById('activityFeed');
+    feed.innerHTML = '';
+    
+    activities.forEach(activity => {
+        const activityEl = document.createElement('div');
+        activityEl.className = `activity-item ${activity.type}`;
+        
+        activityEl.innerHTML = `
+            <div class="activity-meta">
+                <span class="activity-title">${activity.title}</span>
+                <span class="activity-time">${formatTimeAgo(activity.time)}</span>
+            </div>
+            <div class="activity-desc">${activity.description}</div>
+        `;
+        
+        feed.appendChild(activityEl);
+    });
+    
+    // If no activities, show message
+    if (activities.length === 0) {
+        feed.innerHTML = '<div style="padding: 1rem; text-align: center; color: #777;">No recent activities</div>';
+    }
+}
+
+// Add notification
+function addNotification(notification) {
+    // Add to notifications array
+    notifications.unshift({...notification, read: false});
+    
+    // Trim to keep only the latest
+    if (notifications.length > 20) {
+        notifications = notifications.slice(0, 20);
+    }
+    
+    // Update notification count
+    notificationCount = notifications.filter(n => !n.read).length;
+    document.getElementById('notifBadge').textContent = notificationCount;
+    
+    // Update notification panel
+    updateNotificationPanel();
+}
+
+// Update notification panel
+function updateNotificationPanel() {
+    const list = document.getElementById('notificationList');
+    list.innerHTML = '';
+    
+    notifications.forEach((notification, index) => {
+        const notifEl = document.createElement('div');
+        notifEl.className = `notification-item ${notification.read ? '' : 'unread'}`;
+        notifEl.setAttribute('data-index', index);
+        
+        notifEl.innerHTML = `
+            <div style="font-weight: ${notification.read ? 'normal' : 'bold'};">${notification.title}</div>
+            <div>${notification.message}</div>
+            <div class="notification-time">${formatTimeAgo(notification.time)}</div>
+        `;
+        
+        notifEl.addEventListener('click', () => {
+            markNotificationRead(index);
+        });
+        
+        list.appendChild(notifEl);
+    });
+    
+    // If no notifications, show message
+    if (notifications.length === 0) {
+        list.innerHTML = '<div style="padding: 1rem; text-align: center; color: #777;">No notifications</div>';
+    }
+}
+
+// Mark notification as read
+function markNotificationRead(index) {
+    if (notifications[index] && !notifications[index].read) {
+        notifications[index].read = true;
+        notificationCount--;
+        document.getElementById('notifBadge').textContent = notificationCount;
+        updateNotificationPanel();
+    }
+}
+
+// Mark all notifications as read
+function markAllNotificationsRead() {
+    notifications.forEach(n => n.read = true);
+    notificationCount = 0;
+    document.getElementById('notifBadge').textContent = notificationCount;
+    updateNotificationPanel();
+}
+
+// Event Listeners
+document.addEventListener('DOMContentLoaded', () => {
+    // Toggle sidebar
+    document.querySelector('.toggle-sidebar').addEventListener('click', function() {
+        document.querySelector('.sidebar').classList.toggle('active');
+        document.querySelector('.overlay').classList.toggle('active');
+    });
+    
+    // Close sidebar when clicking overlay
+    document.querySelector('.overlay').addEventListener('click', function() {
+        document.querySelector('.sidebar').classList.remove('active');
+        document.querySelector('.overlay').classList.remove('active');
+    });
+    
+    // Map filter buttons
+    document.querySelectorAll('.map-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            document.querySelectorAll('.map-btn').forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+            updateMapMarkers();
+        });
+    });
+    
+    // Refresh data button
+    document.getElementById('refreshData').addEventListener('click', function() {
+        // Simulate loading new data
+        this.innerHTML = '<span>🔄</span> Loading...';
+        this.disabled = true;
+        
+        setTimeout(() => {
+            updateDevicePositions();
+            this.innerHTML = '<span>🔄</span> Refresh';
+            this.disabled = false;
+            
+            // Add activity for refresh
+            addActivity({
+                title: "Data Refreshed",
+                time: new Date(),
+                description: "Manual refresh requested. All device data updated.",
+                type: "info"
+            });
+        }, 1000);
+    });
+    
+    // Notification panel toggle
+    document.getElementById('notifBtn').addEventListener('click', function(e) {
+        e.stopPropagation();
+        document.getElementById('notifPanel').classList.toggle('active');
+    });
+    
+    // Close notification panel when clicking outside
+    document.addEventListener('click', function(e) {
+        if (!document.getElementById('notifPanel').contains(e.target) && 
+            !document.getElementById('notifBtn').contains(e.target)) {
+            document.getElementById('notifPanel').classList.remove('active');
+        }
+    });
+    
+    // Mark all notifications as read
+    document.getElementById('markAllRead').addEventListener('click', function() {
+        markAllNotificationsRead();
+    });
+    
+    // Initial activities
+    addActivity({
+        title: "System Started",
+        time: new Date(),
+        description: "ResQLink monitoring system initialized and connected to satellite network.",
+        type: "info"
+    });
+    
+    addActivity({
+        title: "Team Deployed",
+        time: new Date(Date.now() - 30 * 60000),
+        description: "Rescue Team A deployed to sector 7 for routine patrol.",
+        type: "info"
+    });
+    
+    addActivity({
+        title: "Low Battery Alert",
+        time: new Date(Date.now() - 45 * 60000),
+        description: "Device RQ-0017 battery level at 15%. Please replace or recharge soon.",
+        type: "warning"
+    });
+    
+    addActivity({
+        title: "SOS Signal Received",
+        time: new Date(Date.now() - 75 * 60000),
+        description: "Device RQ-0023 triggered an emergency SOS. Location: 27.7172° N, 85.3240° E",
+        type: "critical"
+    });
+    
+    // Initial notifications
+    addNotification({
+        title: "Emergency SOS",
+        message: "Device RQ-0023 has triggered an emergency SOS signal!",
+        time: new Date(Date.now() - 75 * 60000),
+        type: "critical"
+    });
+    
+    addNotification({
+        title: "Low Battery Warning",
+        message: "Device RQ-0017 battery level is low (15%)",
+        time: new Date(Date.now() - 45 * 60000),
+        type: "warning"
+    });
+    
+    // Simulate periodic updates
+    setInterval(updateDevicePositions, 30000);
+    
+    // Set initial map filter
+    document.querySelector('.map-btn[data-filter="all"]').click();
+});
+
+// Simulate device movement
+function updateDevicePositions() {
+    Object.values(devices).forEach(device => {
+        // Skip offline devices
+        if (device.status === "OFFLINE") return;
+        
+        // Calculate random movement
+        const latChange = (Math.random() * 0.002 - 0.001);
+        const lngChange = (Math.random() * 0.002 - 0.001);
+        
+        // Update coordinates
+        device.coordinates = {
+            lat: device.coordinates.lat + latChange,
+            lng: device.coordinates.lng + lngChange
+        };
+        
+        // Sometimes update battery for devices
+        if (device.type === "device" && Math.random() > 0.7) {
+            // Decrease battery
+            device.battery = Math.max(0, device.battery - Math.floor(Math.random() * 3));
+            
+            // Update status if battery too low
+            if (device.battery < 10 && device.status !== "SOS") {
+                device.status = "LOW_BATTERY";
+                
+                // Add activity and notification
+                addActivity({
+                    title: "Low Battery Alert",
+                    time: new Date(),
+                    description: `Device ${device.id} battery level at ${device.battery}%. Please replace or recharge soon.`,
+                    type: "warning"
+                });
+                
+                addNotification({
+                    title: "Low Battery Warning",
+                    message: `Device ${device.id} battery level is low (${device.battery}%)`,
+                    time: new Date(),
+                    type: "warning"
+                });
+            }
+        }
+        
+        // Update last seen time
+        device.lastUpdate = new Date();
+    });
+    
+    // Update UI
+    updateDeviceTable();
+    updateMapMarkers();
+}
+
+// Simulate new device SOS randomly
+setInterval(() => {
+    // 2% chance of SOS per minute
+    if (Math.random() < 0.02) {
+        // Find an active device that's not already in SOS
+        const activeDevices = Object.values(devices).filter(
+            d => d.type === "device" && d.status !== "SOS" && d.status !== "OFFLINE"
+        );
+        
+        if (activeDevices.length > 0) {
+            const randomDevice = activeDevices[Math.floor(Math.random() * activeDevices.length)];
+            
+            // Update status to SOS
+            randomDevice.status = "SOS";
+            
+            // Add activity
+            addActivity({
+                title: "SOS Signal Received",
+                time: new Date(),
+                description: `Device ${randomDevice.id} triggered an emergency SOS. Location: ${randomDevice.coordinates.lat.toFixed(4)}° N, ${randomDevice.coordinates.lng.toFixed(4)}° E`,
+                type: "critical"
+            });
+            
+            // Add notification
+            addNotification({
+                title: "Emergency SOS",
+                message: `Device ${randomDevice.id} has triggered an emergency SOS signal!`,
+                time: new Date(),
+                type: "critical"
+            });
+            
+            // Update UI
+            updateDeviceTable();
+            updateMapMarkers();
+            updateStats();
+        }
+    }
+}, 60000);
+
+// Firebase simulation for incoming data
+setInterval(() => {
+    // 20% chance of receiving new data per 15 seconds
+    if (Math.random() < 0.2) {
+        // Create a random device ID
+        const deviceIdList = ["RQ-0023", "RQ-0017", "RQ-0019", "RQ-0021", "RQ-0015"];
+        const randomDeviceId = deviceIdList[Math.floor(Math.random() * deviceIdList.length)];
+        
+        // Get device if exists
+        const device = devices[randomDeviceId] || {
+            coordinates: {
+                lat: defaultCenter.lat + (Math.random() * 0.01 - 0.005),
+                lng: defaultCenter.lng + (Math.random() * 0.01 - 0.005)
+            },
+            battery: Math.floor(Math.random() * 100)
+        };
+        
+        // Create a simulated message
+        const simulatedLat = device.coordinates.lat + (Math.random() * 0.002 - 0.001);
+        const simulatedLng = device.coordinates.lng + (Math.random() * 0.002 - 0.001);
+        const simulatedBattery = Math.max(0, device.battery - Math.floor(Math.random() * 5));
+        
+        // Determine status
+        let simulatedStatus = "ACTIVE";
+        if (simulatedBattery < 10) simulatedStatus = "LOW_BATTERY";
+        if (Math.random() < 0.05) simulatedStatus = "SOS";
+        
+        // Create message
+        const message = `${randomDeviceId}:${simulatedLat.toFixed(6)},${simulatedLng.toFixed(6)}:${simulatedBattery}:${simulatedStatus}`;
+        
+        // Process the message
+        processLoRaMessage(message);
+    }
+}, 15000);
+
+// Document resize handler
+window.addEventListener('resize', function() {
+    // Adjust heights or other layout components if needed
+});

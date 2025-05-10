@@ -3,498 +3,1262 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RESQLINK Monitor</title>
+    <title>RESQLINK - Emergency Communication System</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link rel="stylesheet" href="style.css">
+    <style>
+        :root {
+            --primary: #00acc1;
+            --primary-light: #5ddef4;
+            --primary-dark: #007c91;
+            --secondary: #26c6da;
+            --light: #e0f7fa;
+            --dark: #006064;
+            --white: #ffffff;
+            --black: #212121;
+            --gray: #f5f5f5;
+            --gray-dark: #9e9e9e;
+            --success: #26a69a;
+            --warning: #ffa726;
+            --danger: #ef5350;
+            --info: #29b6f6;
+            --shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 5px 15px rgba(0, 0, 0, 0.15);
+            --border-radius: 8px;
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--gray);
+            color: var(--black);
+            min-height: 100vh;
+        }
+
+        /* Scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--light);
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-dark);
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        header {
+            background-color: var(--dark);
+            color: var(--white);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: var(--shadow);
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .logo span {
+            color: var(--secondary);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1.5rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--white);
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .nav-links a:hover {
+            color: var(--secondary);
+        }
+
+        .login-btn {
+            background-color: var(--primary);
+            color: var(--white);
+            border: none;
+            padding: 0.5rem 1.2rem;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-weight: 600;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .login-btn:hover {
+            background-color: var(--primary-dark);
+        }
+        
+        .mobile-menu {
+            display: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--white);
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(rgba(0, 96, 100, 0.8), rgba(0, 96, 100, 0.9)), 
+                        url('https://images.unsplash.com/photo-1536599018102-9f6700e1428c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1740&q=80') center/cover no-repeat;
+            color: var(--white);
+            padding: 8rem 0;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 3.2rem;
+            margin-bottom: 1.2rem;
+            line-height: 1.2;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 700px;
+            margin: 0 auto 2rem;
+            line-height: 1.6;
+        }
+
+        .hero-btns {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 0.8rem 1.5rem;
+            border-radius: var(--border-radius);
+            font-weight: 600;
+            text-decoration: none;
+            transition: var(--transition);
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            border: none;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: var(--white);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .btn-secondary {
+            background-color: transparent;
+            color: var(--white);
+            border: 2px solid var(--white);
+        }
+
+        .btn-secondary:hover {
+            background-color: var(--white);
+            color: var(--dark);
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .btn-large {
+            font-size: 1.2rem;
+            padding: 1rem 2rem;
+        }
+
+        /* Rescue Now Section */
+        .rescue-now {
+            background-color: var(--danger);
+            color: var(--white);
+            text-align: center;
+            padding: 5rem 1rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .rescue-pulse {
+            position: absolute;
+            width: 150px;
+            height: 150px;
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: translate(-50%, -50%) scale(0);
+                opacity: 0.8;
+            }
+            70% {
+                transform: translate(-50%, -50%) scale(2);
+                opacity: 0;
+            }
+            100% {
+                transform: translate(-50%, -50%) scale(0);
+                opacity: 0;
+            }
+        }
+
+        .rescue-now .container {
+            position: relative;
+            z-index: 2;
+        }
+
+        .rescue-now h2 {
+            font-size: 2.8rem;
+            margin-bottom: 2rem;
+        }
+
+        .rescue-now .btn {
+            background-color: var(--white);
+            color: var(--danger);
+            font-size: 1.5rem;
+            padding: 1rem 2.5rem;
+            border-radius: 8px;
+            font-weight: bold;
+            box-shadow: var(--shadow-lg);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .rescue-now .btn:hover {
+            transform: scale(1.05);
+        }
+
+        /* Features Section */
+        .features {
+            padding: 5rem 0;
+            background-color: var(--white);
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .section-title h2 {
+            font-size: 2.5rem;
+            color: var(--dark);
+            margin-bottom: 1rem;
+            position: relative;
+            display: inline-block;
+        }
+
+        .section-title h2::after {
+            content: "";
+            position: absolute;
+            height: 4px;
+            width: 60px;
+            background-color: var(--primary);
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-radius: 2px;
+        }
+
+        .section-title p {
+            color: var(--gray-dark);
+            max-width: 600px;
+            margin: 1.5rem auto 0;
+            font-size: 1.1rem;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .feature-card {
+            background-color: var(--light);
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            text-align: center;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            border-bottom: 4px solid transparent;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--shadow-lg);
+            border-bottom: 4px solid var(--primary);
+        }
+
+        .feature-icon {
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            width: 80px;
+            height: 80px;
+            background-color: var(--light);
+            border-radius: 50%;
+            box-shadow: 0 5px 15px rgba(0, 172, 193, 0.2);
+        }
+
+        .feature-card h3 {
+            margin-bottom: 1rem;
+            color: var(--dark);
+            font-size: 1.3rem;
+        }
+
+        .feature-card p {
+            color: var(--gray-dark);
+            line-height: 1.6;
+        }
+
+        /* About */
+        .about {
+            padding: 5rem 0;
+            background-color: var(--light);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .about::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 10% 20%, rgba(0, 172, 193, 0.05) 0%, transparent 60%);
+        }
+
+        .about-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 3rem;
+            align-items: center;
+            position: relative;
+        }
+
+        .about-text h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--dark);
+            position: relative;
+            display: inline-block;
+        }
+
+        .about-text h2::after {
+            content: "";
+            position: absolute;
+            height: 4px;
+            width: 60px;
+            background-color: var(--primary);
+            bottom: -10px;
+            left: 0;
+            border-radius: 2px;
+        }
+
+        .about-text p {
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+            color: var(--gray-dark);
+        }
+
+        .about-image img {
+            width: 100%;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-lg);
+            transition: var(--transition);
+        }
+
+        .about-image img:hover {
+            transform: scale(1.02);
+        }
+
+        /* Team */
+        .team {
+            padding: 5rem 0;
+            background-color: var(--white);
+        }
+
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+
+        .team-member {
+            background-color: var(--light);
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+
+        .team-member:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .team-photo {
+            height: 250px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .team-photo::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 30%;
+            background: linear-gradient(to top, rgba(0, 96, 100, 0.7), transparent);
+            opacity: 0;
+            transition: var(--transition);
+        }
+
+        .team-member:hover .team-photo::after {
+            opacity: 1;
+        }
+
+        .team-photo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: var(--transition);
+        }
+
+        .team-member:hover .team-photo img {
+            transform: scale(1.1);
+        }
+
+        .team-info {
+            padding: 1.5rem;
+            text-align: center;
+            position: relative;
+        }
+
+        .team-info::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 50px;
+            height: 4px;
+            background-color: var(--primary);
+            border-radius: 2px;
+        }
+
+        .team-info h3 {
+            margin-top: 0.5rem;
+            margin-bottom: 0.5rem;
+            color: var(--dark);
+        }
+
+        .team-info p {
+            color: var(--primary);
+            margin-bottom: 1rem;
+            font-weight: 500;
+        }
+
+        .team-social {
+            display: flex;
+            justify-content: center;
+            gap: 0.8rem;
+            margin-top: 1rem;
+        }
+
+        .team-social a {
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--primary-light);
+            color: var(--primary-dark);
+            border-radius: 50%;
+            transition: var(--transition);
+        }
+
+        .team-social a:hover {
+            background-color: var(--primary);
+            color: var(--white);
+            transform: translateY(-3px);
+        }
+
+        /* Contact Section */
+        .contact {
+            padding: 5rem 0;
+            background-color: var(--white);
+        }
+
+        .contact-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 3rem;
+            align-items: start;
+        }
+
+        .contact-info {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .contact-icon {
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--light);
+            color: var(--primary);
+            font-size: 1.2rem;
+            border-radius: var(--border-radius);
+            transition: var(--transition);
+        }
+
+        .contact-item:hover .contact-icon {
+            background-color: var(--primary);
+            color: var(--white);
+        }
+
+        .contact-text h4 {
+            color: var(--dark);
+            margin-bottom: 0.3rem;
+        }
+
+        .contact-text p, .contact-text a {
+            color: var(--gray-dark);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .contact-text a:hover {
+            color: var(--primary);
+        }
+
+        .contact-form {
+            background-color: var(--light);
+            padding: 2rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--dark);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.8rem;
+            border-radius: var(--border-radius);
+            border: 1px solid var(--gray-dark);
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(0, 172, 193, 0.1);
+        }
+
+        textarea.form-control {
+            resize: vertical;
+            min-height: 150px;
+        }
+
+        /* Footer */
+        footer {
+            background-color: var(--dark);
+            color: var(--white);
+            padding: 3rem 0 1rem;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-column h3 {
+            margin-bottom: 1.5rem;
+            color: var(--white);
+            font-size: 1.2rem;
+            position: relative;
+            display: inline-block;
+        }
+
+        .footer-column h3::after {
+            content: "";
+            position: absolute;
+            height: 3px;
+            width: 40px;
+            background-color: var(--primary);
+            bottom: -10px;
+            left: 0;
+            border-radius: 2px;
+        }
+
+        .footer-column ul {
+            list-style: none;
+        }
+
+        .footer-column ul li {
+            margin-bottom: 0.8rem;
+        }
+
+        .footer-column a {
+            color: #ccc;
+            text-decoration: none;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .footer-column a:hover {
+            color: var(--secondary);
+            transform: translateX(5px);
+        }
+
+        .copyright {
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            color: #ccc;
+            font-size: 0.9rem;
+        }
+
+        .footer-logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .footer-logo span {
+            color: var(--secondary);
+        }
+
+        .footer-text {
+            color: #ccc;
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .social-links a {
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: rgba(255,255,255,0.1);
+            color: var(--white);
+            border-radius: 50%;
+            transition: var(--transition);
+        }
+
+        .social-links a:hover {
+            background-color: var(--primary);
+            transform: translateY(-3px);
+        }
+
+        /* Responsive */
+        @media (max-width: 992px) {
+            .about-content {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .hero p {
+                font-size: 1rem;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .mobile-menu {
+                display: block;
+            }
+
+            .mobile-nav {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100vh;
+                background-color: var(--dark);
+                z-index: 1000;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                transform: translateX(-100%);
+                transition: transform 0.4s ease;
+            }
+
+            .mobile-nav.active {
+                transform: translateX(0);
+            }
+
+            .mobile-nav .nav-links {
+                display: flex;
+                flex-direction: column;
+                gap: 2rem;
+                font-size: 1.2rem;
+                text-align: center;
+            }
+
+            .close-menu {
+                position: absolute;
+                top: 2rem;
+                right: 2rem;
+                font-size: 1.5rem;
+                color: var(--white);
+                background: none;
+                border: none;
+                cursor: pointer;
+            }
+
+            .feature-card {
+                padding: 1.5rem;
+            }
+
+            .rescue-now h2 {
+                font-size: 2rem;
+            }
+
+            .rescue-now .btn {
+                font-size: 1.2rem;
+                padding: 0.8rem 1.5rem;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .hero {
+                padding: 6rem 0;
+            }
+
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .hero-btns {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .btn {
+                width: 80%;
+            }
+
+            .section-title h2 {
+                font-size: 2rem;
+            }
+        }
+    </style>
 </head>
 <body>
-    <div class="sidebar" id="sidebar">
-        <div class="sidebar-header">
-            <div class="logo">RESQ<span>LINK</span></div>
+
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <nav>
+                <div class="logo">
+                    <div>RESQ<span>LINK</span></div>
+                </div>
+                <ul class="nav-links">
+                    <li><a href="#home"><i class="fas fa-home"></i> Home</a></li>
+                    <li><a href="#features"><i class="fas fa-list-alt"></i> Features</a></li>
+                    <li><a href="#about"><i class="fas fa-info-circle"></i> About</a></li>
+                    <li><a href="#team"><i class="fas fa-users"></i> Team</a></li>
+                    <li><a href="#contact"><i class="fas fa-envelope"></i> Contact</a></li>
+                </ul>
+                <div class="mobile-menu" id="mobileMenuBtn"><i class="fas fa-bars"></i></div>
+                <button class="login-btn" id="loginBtn"><i class="fas fa-user"></i> Login</button>
+            </nav>
         </div>
-        <div class="sidebar-menu">
-            <div class="menu-heading">Navigation</div>
-            <a href="#dashboard-section" class="menu-item active" data-section="dashboard-section">
-                <span class="menu-icon"><i class="fas fa-tachometer-alt"></i></span>
-                Dashboard
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <div class="container">
+            <h1>Communication When It Matters Most</h1>
+            <p>RESQLINK provides reliable emergency communication without depending on traditional networks. A lifeline when disaster strikes, keeping people connected in the most challenging situations.</p>
+            <div class="hero-btns">
+                <a href="#contact" class="btn btn-primary btn-large"><i class="fas fa-phone-alt"></i> Contact Us</a>
+                <a href="#about" class="btn btn-secondary"><i class="fas fa-info-circle"></i> Learn More</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Rescue Now Section -->
+    <section class="rescue-now">
+        <div class="rescue-pulse"></div>
+        <div class="container">
+            <h2>Need Immediate Assistance?</h2>
+            <a href="index.html" class="btn" id="rescueBtn">
+                <i class="fas fa-exclamation-triangle"></i> Rescue Now
             </a>
-            <a href="#map-section" class="menu-item" data-section="map-section">
-                <span class="menu-icon"><i class="fas fa-map-marked-alt"></i></span>
-                Location Map
-            </a>
-            <a href="#history-section" class="menu-item" data-section="history-section">
-                <span class="menu-icon"><i class="fas fa-history"></i></span>
-                Location History
-            </a>
-            <a href="#message-section" class="menu-item" data-section="message-section">
-                <span class="menu-icon"><i class="fas fa-comment-dots"></i></span>
-                Message Log
-            </a>
-            <a href="#analytics-section" class="menu-item" data-section="analytics-section">
-                <span class="menu-icon"><i class="fas fa-chart-line"></i></span>
-                Analytics
-            </a>
-            <a href="#settings-section" class="menu-item" data-section="settings-section">
-                <span class="menu-icon"><i class="fas fa-cog"></i></span>
-                Settings
-            </a>
         </div>
-        <div class="sidebar-footer">
-            <div class="user-info">
-                <div class="user-avatar">KS</div>
-                <div>
-                    <div class="user-name">karthi281104</div>
-                    <div class="user-role">Administrator</div>
-                </div>
-            </div>
-        </div>
-    </div>
+    </section>
 
-    <div class="main-content">
-        <div class="header">
-            <button class="toggle-sidebar" id="toggleSidebar">
-                <i class="fas fa-bars"></i>
-            </button>
-            <div class="header-center">
-                <div class="status-indicator online">
-                    <i class="fas fa-circle"></i> System Online
-                </div>
+    <!-- Features Section -->
+    <section class="features" id="features">
+        <div class="container">
+            <div class="section-title">
+                <h2>How RESQLINK Works</h2>
+                <p>Our innovative technology enables communication where traditional networks fail, connecting people during emergencies and critical situations</p>
             </div>
-            <div class="header-right">
-                <div class="time-display" id="currentTime"></div>
-                <div class="notifications">
-                    <i class="fas fa-bell"></i>
-                    <span class="notification-badge">3</span>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-satellite-dish"></i></div>
+                    <h3>Network-Free Communication</h3>
+                    <p>Send critical data without relying on cellular or internet networks using advanced LoRa technology.</p>
                 </div>
-                <div class="user-profile dropdown">
-                    <img src="https://ui-avatars.com/api/?name=K+S&background=006064&color=fff" alt="Profile" class="avatar">
-                    <div class="dropdown-content">
-                        <a href="#"><i class="fas fa-user"></i> Profile</a>
-                        <a href="#"><i class="fas fa-cog"></i> Settings</a>
-                        <a href="#"><i class="fas fa-sign-out-alt"></i> Logout</a>
-                    </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-map-marker-alt"></i></div>
+                    <h3>GPS Location Tracking</h3>
+                    <p>Precise location reporting for stranded individuals or teams in disaster areas.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-battery-full"></i></div>
+                    <h3>Energy Efficient</h3>
+                    <p>Low power consumption ensures longer battery life when it matters most.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-sync-alt"></i></div>
+                    <h3>Real-Time Data Sync</h3>
+                    <p>Information is synchronized with rescue teams as soon as network access is available.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-shield-alt"></i></div>
+                    <h3>Secure Communication</h3>
+                    <p>Encrypted data transmission ensures privacy and security in emergency situations.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-users"></i></div>
+                    <h3>Coordinated Response</h3>
+                    <p>Centralizes information for better coordination between rescue teams and officials.</p>
                 </div>
             </div>
         </div>
+    </section>
 
-        <!-- Dashboard Section -->
-        <div id="dashboard-section" class="content-section active">
-            <div class="dashboard-header">
-                <h1>RESQLINK Monitoring Dashboard</h1>
-                <p>Real-time location and sensor data monitoring</p>
-                <div class="action-buttons">
-                    <button class="btn btn-primary" id="refreshData">
-                        <i class="fas fa-sync-alt"></i> Refresh Data
-                    </button>
-                    <button class="btn btn-secondary" id="exportData">
-                        <i class="fas fa-download"></i> Export
-                    </button>
+    <!-- About Section -->
+    <section class="about" id="about">
+        <div class="container">
+            <div class="about-content">
+                <div class="about-text">
+                    <h2>About RESQLINK</h2>
+                    <p>RESQLINK was developed to address the critical communication challenges faced during disaster situations, trekking expeditions, and remote area operations where traditional networks become unavailable.</p>
+                    <p>Our hardware solution utilizes LoRa frequency technology to transmit vital data like location coordinates, status updates, and emergency messages without requiring cellular or internet connectivity.</p>
+                    <p>By bridging the communication gap during emergencies, we enable faster response times, better coordination between rescue teams, and ultimately save more lives in critical situations.</p>
+                    <a href="#contact" class="btn btn-primary" style="margin-top: 1rem;"><i class="fas fa-envelope"></i> Get In Touch</a>
+                </div>
+                <div class="about-image">
+                    <img src="https://images.unsplash.com/photo-1566045668991-b78add8458e5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80" alt="RESQLINK device being used in the field">
                 </div>
             </div>
+        </div>
+    </section>
 
-            <div class="alert-banner" id="alertBanner">
-                <i class="fas fa-exclamation-triangle"></i>
-                <span id="alertMessage">No active alerts</span>
-                <button class="close-alert" id="closeAlert"><i class="fas fa-times"></i></button>
+    <!-- Team Section -->
+    <section class="team" id="team">
+        <div class="container">
+            <div class="section-title">
+                <h2>Our Team</h2>
+                <p>Meet the experts behind RESQLINK's revolutionary technology</p>
             </div>
-
-            <div class="data-cards">
-                <div class="card status-card">
-                    <div class="card-icon"><i class="fas fa-signal"></i></div>
-                    <div class="card-content">
-                        <h3>Device Status</h3>
-                        <div id="deviceStatus">Online</div>
-                        <div class="status-indicator-small online">Active</div>
+            <div class="team-grid">
+                <div class="team-member">
+                    <div class="team-photo">
+                        <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=300&q=80" alt="Team Member 1">
                     </div>
-                </div>
-                <div class="card">
-                    <div class="card-icon"><i class="fas fa-map-marker-alt"></i></div>
-                    <div class="card-content">
-                        <h3>Latest Location</h3>
-                        <div id="coordinates">Loading...</div>
-                    </div>
-                </div>
-                <div class="card">
-                    <div class="card-icon"><i class="fas fa-comment"></i></div>
-                    <div class="card-content">
-                        <h3>Last Message</h3>
-                        <div id="lastMessage">Loading...</div>
-                    </div>
-                </div>
-                <div class="card">
-                    <div class="card-icon"><i class="fas fa-clock"></i></div>
-                    <div class="card-content">
-                        <h3>Last Update</h3>
-                        <div id="lastUpdate">Loading...</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="main-grid">
-                <div class="map-section">
-                    <div class="map-header">
-                        <h2>Current Location</h2>
-                        <div class="map-controls">
-                            <button class="btn btn-small" id="zoomIn"><i class="fas fa-search-plus"></i></button>
-                            <button class="btn btn-small" id="zoomOut"><i class="fas fa-search-minus"></i></button>
-                            <button class="btn btn-small" id="recenterMap"><i class="fas fa-crosshairs"></i></button>
+                    <div class="team-info">
+                        <h3>Alex Johnson</h3>
+                        <p>Lead Hardware Engineer</p>
+                        <div class="team-social">
+                            <a href="#"><i class="fab fa-linkedin"></i></a>
+                            <a href="#"><i class="fab fa-twitter"></i></a>
+                            <a href="#"><i class="fas fa-envelope"></i></a>
                         </div>
                     </div>
-                    <div class="map-container">
-                        <div id="map"></div>
+                </div>
+                <div class="team-member">
+                    <div class="team-photo">
+                        <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=300&q=80" alt="Team Member 2">
+                    </div>
+                    <div class="team-info">
+                        <h3>Maria Garcia</h3>
+                        <p>Software Architect</p>
+                        <div class="team-social">
+                            <a href="#"><i class="fab fa-linkedin"></i></a>
+                            <a href="#"><i class="fab fa-twitter"></i></a>
+                            <a href="#"><i class="fas fa-envelope"></i></a>
+                        </div>
                     </div>
                 </div>
-
-                <div class="message-log">
-                    <div class="log-header">
-                        <h2>Recent Messages</h2>
-                        <button class="btn btn-small" id="clearMessages"><i class="fas fa-trash"></i></button>
+                <div class="team-member">
+                    <div class="team-photo">
+                        <img src="https://images.unsplash.com/photo-1531891437562-4301cf35b7e4?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=300&q=80" alt="Team Member 3">
                     </div>
-                    <div class="log-content" id="messageLog"></div>
-                    <div class="log-footer">
-                        <button class="btn btn-full" id="viewAllMessages">View All Messages</button>
+                    <div class="team-info">
+                        <h3>David Lee</h3>
+                        <p>Emergency Response Specialist</p>
+                        <div class="team-social">
+                            <a href="#"><i class="fab fa-linkedin"></i></a>
+                            <a href="#"><i class="fab fa-twitter"></i></a>
+                            <a href="#"><i class="fas fa-envelope"></i></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="team-member">
+                    <div class="team-photo">
+                        <img src="https://images.unsplash.com/photo-1590649293255-824d2244d0c6?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=300&q=80" alt="Team Member 4">
+                    </div>
+                    <div class="team-info">
+                        <h3>Priya Sharma</h3>
+                        <p>Project Manager</p>
+                        <div class="team-social">
+                            <a href="#"><i class="fab fa-linkedin"></i></a>
+                            <a href="#"><i class="fab fa-twitter"></i></a>
+                            <a href="#"><i class="fas fa-envelope"></i></a>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
+    </section>
 
-        <!-- Map Section -->
-        <div id="map-section" class="content-section">
-            <div class="section-header">
-                <h1>Location Tracking</h1>
-                <p>Real-time device location with detailed controls</p>
+    <!-- Contact Section -->
+    <section class="contact" id="contact">
+        <div class="container">
+            <div class="section-title">
+                <h2>Contact Us</h2>
+                <p>Interested in RESQLINK for your organization? Get in touch with our team.</p>
             </div>
-            
-            <div class="fullscreen-map-container">
-                <div class="map-sidebar">
-                    <div class="map-filters">
-                        <h3>Map Controls</h3>
-                        <div class="filter-group">
-                            <label>Map Type</label>
-                            <select id="mapType" class="select-input">
-                                <option value="roadmap">Road Map</option>
-                                <option value="satellite">Satellite</option>
-                                <option value="hybrid">Hybrid</option>
-                                <option value="terrain">Terrain</option>
-                            </select>
+            <div class="contact-container">
+                <div class="contact-info">
+                    <div class="contact-item">
+                        <div class="contact-icon">
+                            <i class="fas fa-map-marker-alt"></i>
                         </div>
-                        <div class="filter-group">
-                            <label>Show Path</label>
-                            <label class="switch">
-                                <input type="checkbox" id="showPath" checked>
-                                <span class="slider round"></span>
-                            </label>
-                        </div>
-                        <div class="filter-group">
-                            <label>Location Markers</label>
-                            <label class="switch">
-                                <input type="checkbox" id="showMarkers" checked>
-                                <span class="slider round"></span>
-                            </label>
-                        </div>
-                        <div class="filter-group">
-                            <label>Auto Center</label>
-                            <label class="switch">
-                                <input type="checkbox" id="autoCenter" checked>
-                                <span class="slider round"></span>
-                            </label>
+                        <div class="contact-text">
+                            <h4>Our Location</h4>
+                            <p>123 Rescue Road, Safety City, SC 12345</p>
                         </div>
                     </div>
-                    
-                    <div class="location-details">
-                        <h3>Current Location</h3>
-                        <div class="detail-item">
-                            <span class="detail-label">Latitude:</span>
-                            <span class="detail-value" id="currentLat">--</span>
+                    <div class="contact-item">
+                        <div class="contact-icon">
+                            <i class="fas fa-envelope"></i>
                         </div>
-                        <div class="detail-item">
-                            <span class="detail-label">Longitude:</span>
-                            <span class="detail-value" id="currentLon">--</span>
-                        </div>
-                        <div class="detail-item">
-                            <span class="detail-label">Altitude:</span>
-                            <span class="detail-value" id="currentAlt">--</span>
-                        </div>
-                        <div class="detail-item">
-                            <span class="detail-label">Speed:</span>
-                            <span class="detail-value" id="currentSpeed">--</span>
-                        </div>
-                        <div class="detail-item">
-                            <span class="detail-label">Last Update:</span>
-                            <span class="detail-value" id="locationTimestamp">--</span>
+                        <div class="contact-text">
+                            <h4>Email Us</h4>
+                            <a href="mailto:info@resqlink.com">info@resqlink.com</a>
                         </div>
                     </div>
-                    
-                    <div class="nearby-addresses">
-                        <h3>Nearby Address</h3>
-                        <div id="addressInfo">Retrieving address...</div>
+                    <div class="contact-item">
+                        <div class="contact-icon">
+                            <i class="fas fa-phone-alt"></i>
+                        </div>
+                        <div class="contact-text">
+                            <h4>Call Us</h4>
+                            <a href="tel:+1234567890">+1 (234) 567-890</a>
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <div class="contact-icon">
+                            <i class="far fa-clock"></i>
+                        </div>
+                        <div class="contact-text">
+                            <h4>Office Hours</h4>
+                            <p>Monday - Friday: 9:00 AM - 6:00 PM</p>
+                        </div>
                     </div>
                 </div>
-                <div id="fullscreenMap"></div>
-            </div>
-        </div>
-
-        <!-- History Section -->
-        <div id="history-section" class="content-section">
-            <div class="section-header">
-                <h1>Location History</h1>
-                <p>Track movement patterns and history</p>
-                <div class="history-controls">
-                    <div class="date-picker">
-                        <label for="startDate">Start Date</label>
-                        <input type="date" id="startDate" class="date-input">
-                    </div>
-                    <div class="date-picker">
-                        <label for="endDate">End Date</label>
-                        <input type="date" id="endDate" class="date-input">
-                    </div>
-                    <button class="btn btn-primary" id="filterHistory"><i class="fas fa-filter"></i> Filter</button>
-                </div>
-            </div>
-            
-            <div class="history-container">
-                <div class="history-map-container">
-                    <div id="historyMap"></div>
-                </div>
-                <div class="history-timeline">
-                    <h3>Timeline</h3>
-                    <div class="timeline-container" id="locationTimeline"></div>
-                </div>
-            </div>
-            
-            <div class="history-data">
-                <h3>Location Records</h3>
-                <div class="table-container">
-                    <table class="data-table" id="historyTable">
-                        <thead>
-                            <tr>
-                                <th>Date & Time</th>
-                                <th>Latitude</th>
-                                <th>Longitude</th>
-                                <th>Message</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="historyTableBody">
-                            <!-- History data rows will be populated here -->
-                        </tbody>
-                    </table>
-                </div>
-                <div class="pagination">
-                    <button id="prevPage" class="btn btn-small"><i class="fas fa-chevron-left"></i></button>
-                    <span id="pageIndicator">Page 1 of 1</span>
-                    <button id="nextPage" class="btn btn-small"><i class="fas fa-chevron-right"></i></button>
+                <div class="contact-form">
+                    <form id="contactForm">
+                        <div class="form-group">
+                            <label for="name" class="form-label">Name</label>
+                            <input type="text" id="name" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email" class="form-label">Email</label>
+                            <input type="email" id="email" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="subject" class="form-label">Subject</label>
+                            <input type="text" id="subject" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label for="message" class="form-label">Message</label>
+                            <textarea id="message" class="form-control" rows="5" required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary" style="width: 100%;">
+                            <i class="fas fa-paper-plane"></i> Send Message
+                        </button>
+                    </form>
                 </div>
             </div>
         </div>
+    </section>
 
-        <!-- Message Section -->
-        <div id="message-section" class="content-section">
-            <div class="section-header">
-                <h1>Message Log</h1>
-                <p>Complete communication history</p>
-                <div class="message-controls">
-                    <div class="message-search">
-                        <input type="text" placeholder="Search messages..." id="messageSearch" class="search-input">
-                        <button class="btn btn-primary" id="searchMessages"><i class="fas fa-search"></i></button>
-                    </div>
-                    <div class="message-filter">
-                        <select id="messageFilter" class="select-input">
-                            <option value="all">All Messages</option>
-                            <option value="alert">Alerts</option>
-                            <option value="status">Status Updates</option>
-                            <option value="location">Location Updates</option>
-                        </select>
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <div class="footer-logo">RESQ<span>LINK</span></div>
+                    <p class="footer-text">We provide innovative emergency communication solutions when traditional networks fail. Helping save lives through technology.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
                     </div>
                 </div>
-            </div>
-            
-            <div class="message-container">
-                <div class="full-message-log" id="fullMessageLog">
-                    <!-- Messages will be populated here -->
+                <div class="footer-column">
+                    <h3>Navigation</h3>
+                    <ul>
+                        <li><a href="#home"><i class="fas fa-chevron-right"></i> Home</a></li>
+                        <li><a href="#features"><i class="fas fa-chevron-right"></i> Features</a></li>
+                        <li><a href="#about"><i class="fas fa-chevron-right"></i> About</a></li>
+                        <li><a href="#team"><i class="fas fa-chevron-right"></i> Team</a></li>
+                        <li><a href="#contact"><i class="fas fa-chevron-right"></i> Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Resources</h3>
+                    <ul>
+                        <li><a href="#"><i class="fas fa-file-alt"></i> Documentation</a></li>
+                        <li><a href="#"><i class="fas fa-question-circle"></i> Support</a></li>
+                        <li><a href="#"><i class="fas fa-info-circle"></i> FAQs</a></li>
+                        <li><a href="#"><i class="fas fa-rss"></i> Blog</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Legal</h3>
+                    <ul>
+                        <li><a href="#"><i class="fas fa-gavel"></i> Terms of Service</a></li>
+                        <li><a href="#"><i class="fas fa-user-shield"></i> Privacy Policy</a></li>
+                        <li><a href="#"><i class="fas fa-cookie"></i> Cookie Policy</a></li>
+                    </ul>
                 </div>
             </div>
-            
-            <div class="message-composer">
-                <h3>Send Message</h3>
-                <div class="composer-form">
-                    <select id="messageType" class="select-input">
-                        <option value="command">Command</option>
-                        <option value="query">Query</option>
-                        <option value="alert">Alert</option>
-                    </select>
-                    <input type="text" id="messageContent" placeholder="Type message..." class="text-input">
-                    <button class="btn btn-primary" id="sendMessage"><i class="fas fa-paper-plane"></i> Send</button>
-                </div>
+            <div class="copyright">
+                <p>&copy; <span id="currentYear">2025</span> RESQLINK. All rights reserved. | <span style="color: var(--primary);">Current User: karthi281104</span></p>
             </div>
         </div>
+    </footer>
 
-        <!-- Analytics Section -->
-        <div id="analytics-section" class="content-section">
-            <div class="section-header">
-                <h1>Analytics Dashboard</h1>
-                <p>Data insights and statistics</p>
-                <div class="analytics-controls">
-                    <select id="timeRange" class="select-input">
-                        <option value="day">Last 24 Hours</option>
-                        <option value="week">Last 7 Days</option>
-                        <option value="month">Last 30 Days</option>
-                        <option value="year">Last Year</option>
-                    </select>
-                </div>
-            </div>
-            
-            <div class="analytics-grid">
-                <div class="analytics-card">
-                    <h3>Distance Traveled</h3>
-                    <div class="analytics-value" id="distanceTraveled">0 km</div>
-                    <canvas id="distanceChart"></canvas>
-                </div>
-                <div class="analytics-card">
-                    <h3>Messages Sent/Received</h3>
-                    <div class="analytics-value" id="messageCount">0</div>
-                    <canvas id="messageChart"></canvas>
-                </div>
-                <div class="analytics-card">
-                    <h3>Battery Status</h3>
-                    <div class="analytics-value" id="batteryStatus">80%</div>
-                    <canvas id="batteryChart"></canvas>
-                </div>
-                <div class="analytics-card">
-                    <h3>System Uptime</h3>
-                    <div class="analytics-value" id="systemUptime">0 days</div>
-                    <canvas id="uptimeChart"></canvas>
-                </div>
-            </div>
-            
-            <div class="heatmap-container">
-                <h3>Location Heatmap</h3>
-                <div id="heatmap"></div>
-            </div>
-        </div>
-
-        <!-- Settings Section -->
-        <div id="settings-section" class="content-section">
-            <div class="section-header">
-                <h1>System Settings</h1>
-                <p>Configure system parameters and preferences</p>
-            </div>
-            
-            <div class="settings-container">
-                <div class="settings-sidebar">
-                    <div class="settings-nav">
-                        <a href="#general-settings" class="settings-nav-item active">General</a>
-                        <a href="#notification-settings" class="settings-nav-item">Notifications</a>
-                        <a href="#map-settings" class="settings-nav-item">Map Display</a>
-                        <a href="#device-settings" class="settings-nav-item">Device Config</a>
-                        <a href="#account-settings" class="settings-nav-item">Account</a>
-                    </div>
-                </div>
-                
-                <div class="settings-content">
-                    <div id="general-settings" class="settings-panel active">
-                        <h2>General Settings</h2>
-                        
-                        <div class="settings-group">
-                            <h3>System Preferences</h3>
-                            <div class="setting-item">
-                                <div class="setting-label">
-                                    <label>Dark Mode</label>
-                                    <span class="setting-description">Enable dark theme for the interface</span>
-                                </div>
-                                <div class="setting-control">
-                                    <label class="switch">
-                                        <input type="checkbox" id="darkModeToggle">
-                                        <span class="slider round"></span>
-                                    </label>
-                                </div>
-                            </div>
-                            
-                            <div class="setting-item">
-                                <div class="setting-label">
-                                    <label>Auto Refresh</label>
-                                    <span class="setting-description">Automatically refresh data</span>
-                                </div>
-                                <div class="setting-control">
-                                    <select id="refreshInterval" class="select-input">
-                                        <option value="0">Off</option>
-                                        <option value="30" selected>30 seconds</option>
-                                        <option value="60">1 minute</option>
-                                        <option value="300">5 minutes</option>
-                                    </select>
-                                </div>
-                            </div>
-                            
-                            <div class="setting-item">
-                                <div class="setting-label">
-                                    <label>Data Storage Duration</label>
-                                    <span class="setting-description">How long to keep historical data</span>
-                                </div>
-                                <div class="setting-control">
-                                    <select id="dataRetention" class="select-input">
-                                        <option value="7">7 days</option>
-                                        <option value="30" selected>30 days</option>
-                                        <option value="90">90 days</option>
-                                        <option value="365">1 year</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="settings-group">
-                            <h3>Time & Date</h3>
-                            <div class="setting-item">
-                                <div class="setting-label">
-                                    <label>Time Format</label>
-                                    <span class="setting-description">Choose 12 or 24-hour format</span>
-                                </div>
-                                <div class="setting-control">
-                                    <select id="timeFormat" class="select-input">
-                                        <option value="12">12-hour</option>
-                                        <option value="24">24-hour</option>
-                                    </select>
-                                </div>
-                            </div>
-                            
-                            <div class="setting-item">
-                                <div class="setting-label">
-                                    <label>Timezone</label>
-                                    <span class="setting-description">Set your preferred timezone</span>
-                                </div>
-                                <div class="setting-control">
-                                    <select id="timezone" class="select-input">
-                                        <option value="UTC">UTC</option>
-                                        <option value="local" selected>Local Browser Time</option>
-                                        <!-- More options can be added -->
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <button class="btn btn-primary" id="saveGeneralSettings">Save Settings</button>
-                    </div>
-                    
-                    <!-- Other settings panels would go here -->
-                </div>
-            </div>
-        </div>
+    <script>
+        // Get current year for footer
+        document.getElementById('currentYear').textContent = new Date().getFullYear();
         
-        <div class="footer">
-            <div>RESQLINK Dashboard v1.5</div>
-            <div>&copy; 2025 RESQLINK Systems</div>
-        </div>
-    </div>
-
-    <!-- Firebase -->
-    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
-    
-    <!-- Chart.js for analytics -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    
-    <!-- Google Maps -->
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD85ArGGCGHtPZH7BW8uh0smpCe4U-u_gE&libraries=visualization&callback=initializeAllMaps" async defer></script>
-    
-    <script src="script.js"></script>
+        // Mobile menu toggle
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const mobileNav = document.getElementById('mobileNav');
+        const closeMenu = document.getElementById('closeMenu');
+        
+        mobileMenuBtn.addEventListener('click', function() {
+            mobileNav.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        });
+        
+        closeMenu.addEventListener('click', function() {
+            mobileNav.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        });
+        
+        // Close mobile menu when clicking on a link
+        const mobileLinks = document.querySelectorAll('#mobileNav .nav-links a');
+        mobileLinks.forEach(link => {
+            link.addEventListener('click', function() {
+                mobileNav.classList.remove('active');
+                document.body.style.overflow = 'auto';
+            });
+        });
+        
+        // Smooth scrolling for all anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                const targetId = this.getAttribute('href');
+                if (targetId === '#') return;
+                
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 70,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+        
+        // Login button redirect
+        document.getElementById('loginBtn').addEventListener('click', function() {
+            window.location.href = 'login.html';
+        });
+        
+        // Rescue Now button effects
+        const rescueBtn = document.getElementById('rescueBtn');
+        rescueBtn.addEventListener('mouseenter', function() {
+            this.style.transform = 'scale(1.05)';
+            this.style.boxShadow = '0 10px 20px rgba(0,0,0,0.2)';
+        });
+        
+        rescueBtn.addEventListener('mouseleave', function() {
+            this.style.transform = '';
+            this.style.boxShadow = '';
+        });
+        
+        rescueBtn.addEventListener('click', function() {
+            // Add "pressing" effect
+            this.style.transform = 'scale(0.95)';
+            setTimeout(() => {
+                window.location.href = 'index.html';
+            }, 200);
+        });
+        
+        // Form submission handling
+        document.getElementById('contactForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Get form values
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const subject = document.getElementById('subject').value;
+            const message = document.getElementById('message').value;
+            
+            // Normally you would send this data to a server
+            console.log('Form submitted:', { name, email, subject, message });
+            
+            // Show success message (in a real app, this would happen after server confirmation)
+            alert('Thank you for your message! We will get back to you soon.');
+            
+            // Reset form
+            this.reset();
+        });
+        
+        // Highlight active navigation section based on scroll
+        window.addEventListener('scroll', function() {
+            const sections = document.querySelectorAll('section');
+            const navLinks = document.querySelectorAll('.nav-links a');
+            
+            let current = '';
+            
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+                
+                if (pageYOffset >= (sectionTop - 150)) {
+                    current = section.getAttribute('id');
+                }
+            });
+            
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href').substring(1) === current) {
+                    link.classList.add('active');
+                }
+            });
+        });
+        
+        // Display current date and time
+        function updateDateTime() {
+            const now = new Date();
+            const formattedDateTime = `${now.toISOString().split('T')[0]} ${now.toTimeString().split(' ')[0]}`;
+            // You could display this somewhere if needed
+            console.log('Current time:', formattedDateTime);
+        }
+        
+        // Update time when page loads
+        updateDateTime();
+        
+        // Set user information
+        const username = 'karthi281104'; // This is hardcoded based on your requirement
+        console.log(`Current user: ${username}`);
+    </script>
 </body>
 </html>

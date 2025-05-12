@@ -935,7 +935,7 @@
                     <a href="#contact" class="btn btn-primary" style="margin-top: 1rem;"><i class="fas fa-envelope"></i> Get In Touch</a>
                 </div>
                 <div class="about-image">
-                    <img src="https://images.unsplash.com/photo-1566045668991-b78add8458e5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80" alt="RESQLINK device being used in the field">
+                    <img src="lorasending.jpg" alt="RESQLINK device being used in the field">
                 </div>
             </div>
         </div>
@@ -951,11 +951,11 @@
             <div class="team-grid">
                 <div class="team-member">
                     <div class="team-photo">
-                        <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=300&q=80" alt="Team Member 1">
+                        <img src="karthi team.jpg" alt="Team Member 1">
                     </div>
                     <div class="team-info">
-                        <h3>Alex Johnson</h3>
-                        <p>Lead Hardware Engineer</p>
+                        <h3>Karthikeyan A</h3>
+                        <p>IOT and Cloud Engineer</p>
                         <div class="team-social">
                             <a href="#"><i class="fab fa-linkedin"></i></a>
                             <a href="#"><i class="fab fa-twitter"></i></a>
@@ -965,11 +965,11 @@
                 </div>
                 <div class="team-member">
                     <div class="team-photo">
-                        <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=300&q=80" alt="Team Member 2">
+                        <img src="monish team.jpg" alt="Team Member 2">
                     </div>
                     <div class="team-info">
-                        <h3>Maria Garcia</h3>
-                        <p>Software Architect</p>
+                        <h3>Monish S</h3>
+                        <p>IOT and Research Analyst</p>
                         <div class="team-social">
                             <a href="#"><i class="fab fa-linkedin"></i></a>
                             <a href="#"><i class="fab fa-twitter"></i></a>
@@ -979,35 +979,26 @@
                 </div>
                 <div class="team-member">
                     <div class="team-photo">
-                        <img src="https://images.unsplash.com/photo-1531891437562-4301cf35b7e4?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=300&q=80" alt="Team Member 3">
+                        <img src="kishen team photo.jpg" alt="Team Member 3">
                     </div>
                     <div class="team-info">
                         <h3>David Lee</h3>
-                        <p>Emergency Response Specialist</p>
+                        <p>IOT and Business Analyst</p>
                         <div class="team-social">
                             <a href="#"><i class="fab fa-linkedin"></i></a>
                             <a href="#"><i class="fab fa-twitter"></i></a>
                             <a href="#"><i class="fas fa-envelope"></i></a>
                         </div>
                     </div>
+                    <!-- Landscape Group Photo -->
                 </div>
-                <div class="team-member">
-                    <div class="team-photo">
-                        <img src="https://images.unsplash.com/photo-1590649293255-824d2244d0c6?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=300&q=80" alt="Team Member 4">
-                    </div>
-                    <div class="team-info">
-                        <h3>Priya Sharma</h3>
-                        <p>Project Manager</p>
-                        <div class="team-social">
-                            <a href="#"><i class="fab fa-linkedin"></i></a>
-                            <a href="#"><i class="fab fa-twitter"></i></a>
-                            <a href="#"><i class="fas fa-envelope"></i></a>
-                        </div>
-                    </div>
-                </div>
+                    <!-- <div class="team-landscape-container">
+                        <img src="team photo.jpg" alt="Our Team Group Photo" class="team-landscape-photo">
+                    </div> -->
             </div>
         </div>
     </section>
+    
 
     <!-- Contact Section -->
     <section class="contact" id="contact">
@@ -1260,5 +1251,91 @@
         const username = 'karthi281104'; // This is hardcoded based on your requirement
         console.log(`Current user: ${username}`);
     </script>
+    <style>
+        .team {
+    padding: 60px 0;
+    background-color: #f9f9f9;
+    text-align: center;
+}
+
+.team .section-title h2 {
+    font-size: 36px;
+    margin-bottom: 10px;
+}
+
+.team .section-title p {
+    color: #666;
+    font-size: 18px;
+}
+
+.team-grid {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    flex-wrap: wrap;
+    margin-top: 40px;
+}
+
+.team-member {
+    background: #fff;
+    border-radius: 12px;
+    overflow: hidden;
+    width: 250px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+}
+
+.team-member:hover {
+    transform: translateY(-5px);
+}
+
+.team-photo img {
+    width: 100%;
+    height: 250px;
+    object-fit: cover;
+    display: block;
+}
+
+.team-info {
+    padding: 20px;
+}
+
+.team-info h3 {
+    margin: 0;
+    font-size: 20px;
+    color: #333;
+}
+
+.team-info p {
+    color: #777;
+    font-size: 14px;
+    margin: 10px 0;
+}
+
+.team-social a {
+    margin: 0 8px;
+    color: #555;
+    font-size: 18px;
+    transition: color 0.3s;
+}
+
+.team-social a:hover {
+    color: #0077b5; /* LinkedIn blue */
+}
+/* .team-landscape-container {
+    width: 100%;
+    margin-bottom: 40px;
+    text-align: center;
+}
+
+.team-landscape-photo {
+    width: 100%;
+    max-height: 600px;
+    object-fit: cover;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+} */
+
+    </style>
 </body>
 </html>

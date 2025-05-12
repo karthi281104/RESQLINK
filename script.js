@@ -208,6 +208,10 @@ function setupFirebaseListener() {
     setupMockData();
 }
 
+// Store last known coordinates
+let lastLat = 'NA';
+let lastLon = 'NA';
+
 // Process incoming message
 function processMessage(message) {
     try {
@@ -219,36 +223,49 @@ function processMessage(message) {
         // Extract coordinates
         const latMatch = coordPart.match(/Lat: ([-\d.]+)/);
         const lonMatch = coordPart.match(/Lon: ([-\d.]+)/);
-        
+
+        // Initialize variables for use
+        let lat = 'NA';
+        let lon = 'NA';
+        const msgText = msgPart.replace('Msg: ', '');
+        const timestamp = new Date().toISOString();
+
         if (latMatch && lonMatch) {
-            const lat = parseFloat(latMatch[1]);
-            const lon = parseFloat(lonMatch[1]);
-            const msgText = msgPart.replace('Msg: ', '');
-            
-            const timestamp = new Date().toISOString();
-            
-            // Update location
-            updateLocation(lat, lon, timestamp);
-            
-            // Add to location history
-            addLocationToHistory(lat, lon, msgText, timestamp);
-            
-            // Update message log
-            updateMessageLog(msgText, lat, lon, timestamp);
-            
-            // Update dashboard UI
-            updateDashboardCards(lat, lon, msgText);
-            
-            // Update timeline
-            updateTimeline(lat, lon, msgText, timestamp);
-            
-            // Show alert for emergency messages
-            if (msgText.toLowerCase().includes('emergency') || 
-                msgText.toLowerCase().includes('help') || 
-                msgText.toLowerCase().includes('sos')) {
-                showAlert(`EMERGENCY ALERT: ${msgText}`, 'danger');
-            }
+            // Valid coordinates found
+            lat = parseFloat(latMatch[1]);
+            lon = parseFloat(lonMatch[1]);
+
+            // Update last known coordinates
+            lastLat = lat;
+            lastLon = lon;
+        } else {
+            // Fallback to last known coordinates
+            lat = lastLat;
+            lon = lastLon;
         }
+
+        // Update location
+        updateLocation(lat, lon, timestamp);
+
+        // Add to location history
+        addLocationToHistory(lat, lon, msgText, timestamp);
+
+        // Update message log
+        updateMessageLog(msgText, lat, lon, timestamp);
+
+        // Update dashboard UI
+        updateDashboardCards(lat, lon, msgText);
+
+        // Update timeline
+        updateTimeline(lat, lon, msgText, timestamp);
+
+        // Show alert for emergency messages
+        if (msgText.toLowerCase().includes('emergency') || 
+            msgText.toLowerCase().includes('help') || 
+            msgText.toLowerCase().includes('sos')) {
+            showAlert(`EMERGENCY ALERT: ${msgText}`, 'danger');
+        }
+
     } catch (error) {
         console.error('Error processing message:', error);
     }
